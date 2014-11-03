@@ -57,9 +57,16 @@ public class TTS extends AddOn{
         try {
             audio.play(sound);
             audio.play(sound1);
+<<<<<<< HEAD
         } catch (Exception e) {
             e.printStackTrace();
         }
+=======
+        } catch (javazoom.jl.decoder.JavaLayerException e) {
+            e.printStackTrace();
+        }
+
+>>>>>>> init commit created classes
         */
     }
 
