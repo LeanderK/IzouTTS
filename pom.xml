@@ -4,17 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId></groupId>
-    <artifactId></artifactId>
+    <groupId>leanderk.izou.tts</groupId>
+    <artifactId>tts</artifactId>
     <packaging>jar</packaging>
-    <version></version>
-    <name></name>
+    <version>0.5-SNAPSHOT</version>
+    <name>Izou TTS</name>
 
     <properties>
-        <plugin.id></plugin.id>
-        <plugin.class>path.to.the.zipfileManager</plugin.class>
-        <plugin.version></plugin.version>
-        <plugin.provider></plugin.provider>
+        <plugin.id>leanderk.izou.tts</plugin.id>
+        <plugin.class>leanderk.izou.tts.TTS</plugin.class>
+        <plugin.version>0.5</plugin.version>
+        <plugin.provider>Leander Kurscheidt</plugin.provider>
         <plugin.dependencies />
     </properties>
 
