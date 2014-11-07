@@ -5,7 +5,6 @@ import com.gtranslate.context.TranslateEnvironment;
 import intellimate.izou.addon.PropertiesContainer;
 import intellimate.izou.output.OutputExtension;
 import intellimate.izou.output.OutputPlugin;
-import javazoom.jl.decoder.JavaLayerException;
 import leanderk.izou.tts.outputextension.TTSData;
 import leanderk.izou.tts.outputextension.TTSOutputExtension;
 
@@ -118,8 +117,7 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
     private void speak(InputStream sound) {
         try {
             audio.play(sound);
-        } catch (JavaLayerException e) {
-            //TODO: implement exception logging
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
