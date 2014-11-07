@@ -1,4 +1,4 @@
-package leanderk.izou.tts;
+package leanderk.izou.tts.outputextension;
 
 /**
  * Holds the Data for TTS.
