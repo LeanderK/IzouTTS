@@ -3,6 +3,7 @@ package leanderk.izou.tts.outputplugin;
 import com.gtranslate.Audio;
 import com.gtranslate.context.TranslateEnvironment;
 import intellimate.izou.output.OutputPlugin;
+import javazoom.jl.decoder.JavaLayerException;
 import leanderk.izou.tts.outputextension.TTSData;
 
 import java.io.InputStream;
@@ -61,7 +62,8 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
     private void speak(InputStream sound) {
         try {
             audio.play(sound);
-        } catch (Exception e) {
+        } catch (JavaLayerException e) {
+            //TODO: implement exception logging
             e.printStackTrace();
         }
     }
