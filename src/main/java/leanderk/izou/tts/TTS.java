@@ -1,7 +1,5 @@
 package leanderk.izou.tts;
 
-import com.gtranslate.Audio;
-import com.gtranslate.context.TranslateEnvironment;
 import intellimate.izou.activator.Activator;
 import intellimate.izou.addon.AddOn;
 import intellimate.izou.contentgenerator.ContentGenerator;
@@ -9,8 +7,6 @@ import intellimate.izou.events.EventController;
 import intellimate.izou.output.OutputExtension;
 import intellimate.izou.output.OutputPlugin;
 import leanderk.izou.tts.outputplugin.TTSOutputPlugin;
-
-import java.io.*;
 
 /**
  * Created by LeanderK on 01/11/14.
