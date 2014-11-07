@@ -3,6 +3,7 @@ package leanderk.izou.tts.outputplugin;
 import com.gtranslate.Audio;
 import com.gtranslate.context.TranslateEnvironment;
 import intellimate.izou.output.OutputPlugin;
+import javazoom.jl.decoder.JavaLayerException;
 import leanderk.izou.tts.outputextension.TTSData;
 
 import java.io.InputStream;
