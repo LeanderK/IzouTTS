@@ -8,6 +8,7 @@ import intellimate.izou.contentgenerator.ContentGenerator;
 import intellimate.izou.events.EventController;
 import intellimate.izou.output.OutputExtension;
 import intellimate.izou.output.OutputPlugin;
+import leanderk.izou.tts.outputplugin.TTSOutputPlugin;
 
 import java.io.*;
 
@@ -80,11 +81,13 @@ public class TTS extends AddOn{
 
     @Override
     public OutputPlugin[] registerOutputPlugin() {
-        return null;
+        OutputPlugin[] outputPlugins = new OutputPlugin[1];
+        outputPlugins[0] = new TTSOutputPlugin();
+        return outputPlugins;
     }
 
     @Override
     public OutputExtension[] registerOutputExtension() {
-        return new OutputExtension[0];
+        return null;
     }
 }
