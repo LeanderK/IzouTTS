@@ -4,8 +4,8 @@
   <artifactId>tts</artifactId>
   <versioning>
     <versions>
-      <version>0.5-SNAPSHOT</version>
+      <version>0.5.1-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20141114131742</lastUpdated>
+    <lastUpdated>20141114140014</lastUpdated>
   </versioning>
 </metadata>
