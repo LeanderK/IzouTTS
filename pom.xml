@@ -7,12 +7,12 @@
     <groupId>leanderk.izou.tts</groupId>
     <artifactId>tts</artifactId>
     <packaging>jar</packaging>
-    <version>0.5-SNAPSHOT</version>
+    <version>0.8-SNAPSHOT</version>
     <name>Izou TTS</name>
 
     <properties>
         <plugin.id>leanderk.izou.tts</plugin.id>
-        <plugin.class>leanderk.izou.tts.TTS</plugin.class>
+        <plugin.class>leanderk.izou.tts.ZipFileManager</plugin.class>
         <plugin.version>0.5</plugin.version>
         <plugin.provider>Leander Kurscheidt</plugin.provider>
         <plugin.dependencies />
@@ -23,6 +23,11 @@
             <groupId>intellimate.izou</groupId>
             <artifactId>Izou</artifactId>
             <version>0.9.9.6-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>jrichardsz.gtranslate</groupId>
+            <artifactId>gtranslate</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
@@ -36,6 +41,15 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>Temporary Staging Repository</name>
+            <url>file://${project.build.directory}/mvn-repo</url>
+        </repository>
+    </distributionManagement>
+
 
     <build>
         <plugins>
