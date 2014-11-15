@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
  * language (not automated jet, may be in future versions).<br>
  * there are already methods, which help you with generating the sentences. If your code comes to the point, where you
  * want to generate the String, use the getWords(...) method. It will choose a String from the properties List.<br>
+ * IT IS VERY IMPORTANT THAT THE GENERATED SENTENCES HAVE ALL CORRECT ENDINGS(DOTS).<br>
  * <p>
  * The details are more complicated:<br>
  * First, you have to pass an ID.
@@ -127,6 +128,8 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
 
     /**
      * returns one value from multiple possible keys containing the ID.
+     * <p>
+     * IT IS VERY IMPORTANT THAT THE GENERATED SENTENCES HAVE ALL CORRECT ENDINGS(DOTS).<br>
      * Details of this method are explained in the javadoc of the class.
      *
      * @param ID a String ID
