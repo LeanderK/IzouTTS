@@ -21,14 +21,14 @@ import java.util.regex.Pattern;
  * First, you have to pass an ID.
  * Then the method will get all the keys from the properties-file, search for the following pattern:<br><br>
  * <code>
- *     locale_category_id(_index)<br>
- *     <br>
- *     locale&nbsp;&nbsp;&nbsp;= the current locale<br>
- *     category = s for sentence of p it part of a sentence<br>
- *     id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= the id of the key<br>
- *     index&nbsp;&nbsp;&nbsp;&nbsp;= a unique number if there are multiple entries<br></code>
- *     <br>
- *     example: <code>en_s_greeting_13</code><br>
+ * locale_category_id(_index)<br>
+ * <br>
+ * locale&nbsp;&nbsp;&nbsp;= the current locale<br>
+ * category = s for sentence of p it part of a sentence<br>
+ * id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= the id of the key<br>
+ * index&nbsp;&nbsp;&nbsp;&nbsp;= a unique number if there are multiple entries<br></code>
+ * <br>
+ * example: <code>en_s_greeting_13</code><br>
  * If there are multiple keys, it will choose a random one.<br>
  * It will then retrieve the value. The value can be the sentence to return, or it can contain these elements:<br><br>
  * <code>$key = a variable</code>
@@ -38,14 +38,15 @@ import java.util.regex.Pattern;
  * Full example: <code>en_s_greeting_13 = Hello $name, §joke.</code>
  */
 @SuppressWarnings("UnusedDeclaration")
-public abstract class TTSOutputExtension extends OutputExtension<TTSData>{
+public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
 
     private PropertiesContainer propertiesContainer;
     private String locale;
+
     /**
      * creates a new outputExtension with a new id
      *
-     * @param id the id to be set to the id of outputExtension
+     * @param id                  the id to be set to the id of outputExtension
      * @param propertiesContainer the PropertiesContainer used for generating Sentences
      *                            (you can retrieve from the AddOn Class)
      */
@@ -56,21 +57,13 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData>{
 
     @Override
     public final TTSData call() throws Exception {
-        if(canGenerateForLanguage(locale)) return generateSentence();
+        if (canGenerateForLanguage(locale)) return generateSentence();
         return null;
     }
 
     /**
-     * sets the current locale.
-     * This method will be used by the TTSOutputPlugin
-     * @param locale ISO 639-Code for language
-     */
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
-
-    /**
      * return the locale
+     *
      * @return a String containing ISO 639-Code for language
      */
     public String getLocale() {
@@ -78,14 +71,26 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData>{
     }
 
     /**
+     * sets the current locale.
+     * This method will be used by the TTSOutputPlugin
+     *
+     * @param locale ISO 639-Code for language
+     */
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
+    /**
      * override this class to generate the TTSData.
      * it will be called, when canGenerate returns true for the locale
+     *
      * @return an instance of TTSData, which will then be consumed by the TTSOutputPlugin
      */
     public abstract TTSData generateSentence();
 
     /**
      * checks if the TTSOutputExtension can generate TTSData fot the locale
+     *
      * @param locale the locale of the request
      * @return true if able to generate, false if not
      */
@@ -93,11 +98,11 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData>{
 
     /**
      * this method should be used to generate the words for the TTSData.
-     *
+     * <p>
      * it will get all the keys from the properties-file. Details of this method are explained in the javadoc of the
      * class.
      *
-     * @param ID the ID of the word
+     * @param ID     the ID of the word
      * @param values the values to bind
      * @return a String containing the value of one key
      */
@@ -107,14 +112,15 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData>{
 
     /**
      * {@link #getWords(String, java.util.HashMap)} is just a wrapper for this class with a start value for recursion.
-     * @param ID the ID of the word
-     * @param values the values to bind
+     *
+     * @param ID        the ID of the word
+     * @param values    the values to bind
      * @param recursion the number of the recursions, the limit is 100
      * @return a String containing the value of one key
      */
     private String getWords(String ID, HashMap<String, String> values, int recursion) {
         String words = getRandomWords(ID);
-        words = replaceVariables(words,values);
+        words = replaceVariables(words, values);
         words = replaceNames(words, values, recursion);
         return words;
     }
@@ -122,14 +128,15 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData>{
     /**
      * returns one value from multiple possible keys containing the ID.
      * Details of this method are explained in the javadoc of the class.
+     *
      * @param ID a String ID
      * @return a String containing the value of one key
      */
     private String getRandomWords(String ID) {
         LinkedList<String> words = getPossibleWords(ID);
-        if(words.isEmpty()) {
+        if (words.isEmpty()) {
             return "";
-        } else if(words.size() == 1) {
+        } else if (words.size() == 1) {
             return words.pop();
         } else {
             Random random = new Random();
@@ -147,11 +154,11 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData>{
     private LinkedList<String> getPossibleWords(String ID) {
         LinkedList<String> foundList = new LinkedList<>();
         Enumeration<Object> keys = propertiesContainer.getProperties().keys();
-        Pattern pattern = Pattern.compile(locale + "_([sp])_(" + ID +")_?[1-9]?");
+        Pattern pattern = Pattern.compile(locale + "_([sp])_(" + ID + ")_?[1-9]?");
         while (keys.hasMoreElements()) {
             String key = (String) keys.nextElement();
             Matcher matcher = pattern.matcher(key);
-            if(matcher.matches()) {
+            if (matcher.matches()) {
                 String words = propertiesContainer.getProperties().getProperty(key);
                 foundList.add(key);
             }
@@ -162,6 +169,7 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData>{
     /**
      * replaces all the variables (<code>$name</code>).
      * Details of this method are explained in the javadoc of the class.
+     *
      * @param string a string which may contain variables.
      * @param values a HashMap where the values are stored
      * @return a String where all the variables are replaced.
@@ -171,8 +179,8 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData>{
         Matcher matcher = pattern.matcher(string);
         while (matcher.find()) {
             String originalKey = matcher.group();
-            String key= originalKey.replace("$","");
-            string = string.replace(originalKey,values.get(key));
+            String key = originalKey.replace("$", "");
+            string = string.replace(originalKey, values.get(key));
         }
         return string;
     }
@@ -180,8 +188,9 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData>{
     /**
      * replaces all the references to other records with the records.
      * (Recursive calls to {@link #getWords(String, java.util.HashMap)} if recursion doesn't exceed 100)
-     * @param string the words to replace in
-     * @param values the values
+     *
+     * @param string    the words to replace in
+     * @param values    the values
      * @param recursion the number of the recursion
      * @return a string where all the references got replaced
      */
@@ -190,9 +199,9 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData>{
         Matcher matcher = pattern.matcher(string);
         while (matcher.find()) {
             String originalKey = matcher.group();
-            String key= originalKey.replace("$", "");
+            String key = originalKey.replace("$", "");
             String newWords;
-            if(recursion >= 100) {
+            if (recursion >= 100) {
                 newWords = "";
             } else {
                 newWords = getWords(key, values);
