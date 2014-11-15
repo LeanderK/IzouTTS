@@ -14,6 +14,12 @@ package leanderk.izou.tts.outputextension;
 @SuppressWarnings("UnusedDeclaration")
 public class TTSData {
     private String words;
+
+    public String getLocale() {
+        return locale;
+    }
+
+    private String locale;
     //0 most priority, maxInt least priority
     private int priority;
     private String sourceID;
@@ -21,16 +27,18 @@ public class TTSData {
     private String afterID;
 
 
-    private TTSData(String words, int priority, String sourceID, String beforeID, String afterID) {
+    private TTSData(String words, String locale, int priority, String sourceID, String beforeID, String afterID) {
         this.words = words;
+        this.locale = locale;
         this.priority = Math.abs(priority);
         this.sourceID = sourceID;
         this.beforeID = beforeID;
         this.afterID = afterID;
     }
 
-    private TTSData(String words, int priority, String sourceID) {
+    private TTSData(String words, String locale, int priority, String sourceID) {
         this.words = words;
+        this.locale = locale;
         this.priority = priority;
         this.sourceID = sourceID;
     }
@@ -39,20 +47,21 @@ public class TTSData {
      * factory method for TTSData.
      * for further information about the parameters, see documentation of the class
      * @param words the message, may be null or empty
+     * @param locale the locale code, must not be null or empty
      * @param priority the priority
      * @param sourceID the sourceID, must not be null or empty
      * @param beforeID the beforeID, may be null or empty
      * @param afterID the afterID, may be null or empty
-     * @return
+     * @return TTSData an instance of null
      */
-    public static TTSData createTTSData(String words, int priority, String sourceID, String beforeID, String afterID) {
-        if(sourceID == null || sourceID.trim().isEmpty()) return null;
-        return new TTSData(words, priority, sourceID, beforeID, afterID);
+    public static TTSData createTTSData(String words, String locale, int priority, String sourceID, String beforeID, String afterID) {
+        if(sourceID == null || sourceID.trim().isEmpty() || locale == null) return null;
+        return new TTSData(words, locale, priority, sourceID, beforeID, afterID);
     }
 
-    public static TTSData createTTSData(String words, int priority, String sourceID) {
-        if(sourceID == null || sourceID.trim().isEmpty()) return null;
-        return new TTSData(words, priority, sourceID);
+    public static TTSData createTTSData(String words, String locale, int priority, String sourceID) {
+        if(sourceID == null || sourceID.trim().isEmpty() || locale == null) return null;
+        return new TTSData(words, locale, priority, sourceID);
     }
 
 
