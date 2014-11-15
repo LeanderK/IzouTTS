@@ -1,63 +1,61 @@
 package leanderk.izou.tts.outputplugin;
 
 import leanderk.izou.tts.outputextension.TTSData;
-import sun.awt.image.ImageWatched;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.concurrent.ExecutorService;
 
 /**
- * Created by LeanderK on 06/11/14.
+ * This class holds all the instances of TTSElement.
+ * It is also responsible for ordering them.
  */
-public class TTSElementCollection {
-    private HashMap<String, TTSElement> hashMap = new HashMap<>();
-    private PriorityQueue<TTSElement> queue = new PriorityQueue<>();
+class TTSElementCollection {
+    private final HashMap<String, TTSElement> hashMap = new HashMap<>();
+    private final PriorityQueue<TTSElement> queue = new PriorityQueue<>();
+    private ExecutorService threadPool;
+
+    TTSElementCollection(ExecutorService threadPool) {
+        this.threadPool = threadPool;
+    }
 
     public void addTTSElement(TTSData data) {
-        TTSElement element = null;
+        if(data == null) return;
+        TTSElement element;
         if(hashMap.containsKey(data.getSourceID())) {
             element = hashMap.get(data.getSourceID());
             element.setPriority(data.getPriority());
             element.setWords(data.getWords());
         }
         else {
-            element = new TTSElement(data.getWords(), data.getSourceID(), data.getPriority());
+            element = new TTSElement(data.getWords(), data.getLocale(), data.getSourceID(), data.getPriority(), threadPool);
             hashMap.put(data.getSourceID(), element);
         }
-        if(data.getAfterID() != null || !data.getAfterID().isEmpty()) {
-            if(hashMap.containsKey(data.getAfterID())) {
-                TTSElement parent = hashMap.get(data.getAfterID());
-                parent.addAfter(element);
+        if(data.getAfterID() != null || data.getBeforeID() != null) {
+            String parentID;
+            if(data.getAfterID() != null) parentID = data.getAfterID();
+            else parentID = data.getBeforeID();
+
+            TTSElement parent;
+            if(hashMap.containsKey(parentID)) {
+                parent = hashMap.get(parentID);
             } else {
-                TTSElement parent = new TTSElement(data.getAfterID());
-                parent.addAfter(element);
+                parent = new TTSElement(parentID);
+                parent.setDimension(queue);
                 hashMap.put(parent.getID(), parent);
                 queue.add(parent);
             }
-        } else if(data.getBeforeID() != null || !data.getBeforeID().isEmpty()) {
-            if(hashMap.containsKey(data.getAfterID())) {
-                TTSElement parent = hashMap.get(data.getAfterID());
-                parent.addBefore(element);
-            } else {
-                TTSElement parent = new TTSElement(data.getAfterID());
-                parent.addBefore(element);
-                hashMap.put(parent.getID(), parent);
-                queue.add(parent);
-            }
+
+
+            if(data.getAfterID() != null) parent.addAfter(element);
+            else parent.addBefore(element);
+
         } else {
             element.setDimension(queue);
             queue.add(element);
         }
 
-    }
-
-    public HashMap<String, TTSElement> getHashMap() {
-        return hashMap;
-    }
-
-    public PriorityQueue<TTSElement> getQueue() {
-        return queue;
     }
 
     public void clear() {

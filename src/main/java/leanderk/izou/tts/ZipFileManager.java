@@ -1,10 +1,9 @@
-package intellimate.izou.exampleaddon;
+package leanderk.izou.tts;
 
 import ro.fortsoft.pf4j.PluginWrapper;
 
 /**
- * This class MUST be included in any plugin to work.
- * It shouldn't contain logic, the logic belongs in the AddOn classes
+ * Created by LeanderK on 11/11/14.
  */
 public class ZipFileManager extends intellimate.izou.addon.ZipFileManager{
     public ZipFileManager(PluginWrapper wrapper) {

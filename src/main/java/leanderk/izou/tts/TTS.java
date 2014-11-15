@@ -7,12 +7,17 @@ import intellimate.izou.events.EventController;
 import intellimate.izou.output.OutputExtension;
 import intellimate.izou.output.OutputPlugin;
 import leanderk.izou.tts.outputplugin.TTSOutputPlugin;
+import ro.fortsoft.pf4j.Extension;
+
+import java.nio.file.Path;
 
 /**
  * Created by LeanderK on 01/11/14.
  */
+@Extension
 public class TTS extends AddOn{
 
+    @SuppressWarnings("WeakerAccess")
     public static final String ID = TTS.class.getCanonicalName();
 
     public TTS() {
@@ -21,8 +26,7 @@ public class TTS extends AddOn{
 
     @Override
     public void prepare() {
-        /* DEMO
-
+        /*
         //required values
         String enableProxy = "false";
         String proxy = "my.proxy.com";
@@ -53,10 +57,9 @@ public class TTS extends AddOn{
         try {
             audio.play(sound);
             audio.play(sound1);
-        } catch (javazoom.jl.decoder.JavaLayerException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
         */
     }
 
@@ -84,6 +87,11 @@ public class TTS extends AddOn{
 
     @Override
     public OutputExtension[] registerOutputExtension() {
+        return null;
+    }
+
+    @Override
+    public Path registerPropertiesFile() {
         return null;
     }
 }
