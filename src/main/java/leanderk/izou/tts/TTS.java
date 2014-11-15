@@ -81,7 +81,7 @@ public class TTS extends AddOn{
     @Override
     public OutputPlugin[] registerOutputPlugin() {
         OutputPlugin[] outputPlugins = new OutputPlugin[1];
-        outputPlugins[0] = new TTSOutputPlugin();
+        outputPlugins[0] = new TTSOutputPlugin(getPropertiesContainer());
         return outputPlugins;
     }
 

@@ -46,6 +46,11 @@ class TTSElement implements Comparable<TTSElement> {
         this.words = words;
     }
 
+    /**
+     * returns the all InputStreams
+     *
+     * @return a List containing InputStreams
+     */
     public LinkedList<InputStream> getInputStreams() {
         LinkedList<InputStream> inputStreams = new LinkedList<>();
         for (Future<InputStream> future : futures) {
@@ -122,6 +127,12 @@ class TTSElement implements Comparable<TTSElement> {
         this.priority = Math.abs(priority);
     }
 
+    /**
+     * buffers the speech generation.
+     * The speech will be generated online and send back as audio. This method buffers the audio.
+     *
+     * @param callback will be called after finishing
+     */
     public void buffer(Callback callback) {
         if (words.length() > 100) {
             handleLongText(words, callback);
@@ -130,7 +141,14 @@ class TTSElement implements Comparable<TTSElement> {
         }
     }
 
-    public void handleLongText(String text, Callback callback) {
+    /**
+     * handles long texts (over 100 characters).
+     * The method breaks them into the sentences
+     *
+     * @param text     the text to buffer
+     * @param callback will be called after finishing
+     */
+    private void handleLongText(String text, Callback callback) {
         BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.getDefault());
         iterator.setText(text);
         int start = iterator.first();
@@ -144,7 +162,14 @@ class TTSElement implements Comparable<TTSElement> {
         }
     }
 
-    public void bufferLongSentences(String sentence, Callback callback) {
+    /**
+     * If the sentences are again over 100 characters, this method will be called.
+     * It splits the sentence in parts <= 100 characters.
+     *
+     * @param sentence the text to buffer
+     * @param callback will be called after finishing
+     */
+    private void bufferLongSentences(String sentence, Callback callback) {
         BreakIterator iterator = BreakIterator.getWordInstance(Locale.getDefault());
         iterator.setText(sentence);
         StringBuilder wordsStringBuilder = new StringBuilder();
@@ -167,6 +192,7 @@ class TTSElement implements Comparable<TTSElement> {
      * @param o the object to compare to
      * @return negative if less, zero if equal or positive if greater than o
      */
+    @SuppressWarnings("NullableProblems")
     @Override
     public int compareTo(TTSElement o) {
         if (o == null) return 1;

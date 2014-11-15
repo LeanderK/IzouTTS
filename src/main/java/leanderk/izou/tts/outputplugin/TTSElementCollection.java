@@ -20,25 +20,34 @@ class TTSElementCollection {
         this.threadPool = threadPool;
     }
 
+    /**
+     * adds an TTSElement
+     *
+     * @param data the element to add
+     */
     public void addTTSElement(TTSData data) {
-        if(data == null) return;
+        if (data == null) return;
         TTSElement element;
-        if(hashMap.containsKey(data.getSourceID())) {
+        //check if it is already referenced
+        if (hashMap.containsKey(data.getSourceID())) {
+            //retrieve the empty reference
             element = hashMap.get(data.getSourceID());
             element.setPriority(data.getPriority());
             element.setWords(data.getWords());
-        }
-        else {
+        } else {
+            //create new Element
             element = new TTSElement(data.getWords(), data.getLocale(), data.getSourceID(), data.getPriority(), threadPool);
             hashMap.put(data.getSourceID(), element);
         }
-        if(data.getAfterID() != null || data.getBeforeID() != null) {
+        //it is referencing to other element
+        if (data.getAfterID() != null || data.getBeforeID() != null) {
             String parentID;
-            if(data.getAfterID() != null) parentID = data.getAfterID();
+            if (data.getAfterID() != null) parentID = data.getAfterID();
             else parentID = data.getBeforeID();
 
             TTSElement parent;
-            if(hashMap.containsKey(parentID)) {
+            //check if the element referencing to is already existing
+            if (hashMap.containsKey(parentID)) {
                 parent = hashMap.get(parentID);
             } else {
                 parent = new TTSElement(parentID);
@@ -48,7 +57,7 @@ class TTSElementCollection {
             }
 
 
-            if(data.getAfterID() != null) parent.addAfter(element);
+            if (data.getAfterID() != null) parent.addAfter(element);
             else parent.addBefore(element);
 
         } else {
@@ -58,11 +67,19 @@ class TTSElementCollection {
 
     }
 
+    /**
+     * clears the Collection
+     */
     public void clear() {
         queue.clear();
         hashMap.clear();
     }
 
+    /**
+     * returns all the Elements as a List
+     *
+     * @return a list containing all the elements
+     */
     public LinkedList<TTSElement> getFullCollectionAsList() {
         LinkedList<TTSElement> temp = new LinkedList<>();
         for (TTSElement element : queue) {
@@ -71,6 +88,13 @@ class TTSElementCollection {
         return temp;
     }
 
+    /**
+     * this is the actual method for generating the List.
+     * it calls itself recursively
+     *
+     * @param element the element to return the List
+     * @return a LinkedList containing all the elements
+     */
     private LinkedList<TTSElement> getFullCollectionRecursive(TTSElement element) {
         LinkedList<TTSElement> temp = new LinkedList<>();
         for (TTSElement children : element.getBeforeQueue()) {

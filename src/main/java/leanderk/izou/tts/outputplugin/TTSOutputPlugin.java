@@ -2,6 +2,7 @@ package leanderk.izou.tts.outputplugin;
 
 import com.gtranslate.Audio;
 import com.gtranslate.context.TranslateEnvironment;
+import intellimate.izou.addon.PropertiesContainer;
 import intellimate.izou.output.OutputExtension;
 import intellimate.izou.output.OutputPlugin;
 import leanderk.izou.tts.outputextension.TTSData;
@@ -11,7 +12,6 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,7 +26,7 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
     private final int Buffer = 10;
     private int currentBuffer = 0;
     private final Audio audio;
-    @SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings("FieldCanBeLocal")
     private ExecutorService executor = Executors.newFixedThreadPool(Buffer/2);
     private String locale;
 
@@ -35,7 +35,7 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
     }
 
     @SuppressWarnings("WeakerAccess")
-    public TTSOutputPlugin(@SuppressWarnings("SameParameterValue") Properties properties) {
+    public TTSOutputPlugin(@SuppressWarnings("SameParameterValue") PropertiesContainer properties) {
         super(ID);
         collection = new TTSElementCollection(executor);
 
@@ -46,8 +46,8 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
         String googleTranslateText = "http://translate.google.com.{locale}/translate_a/t?";
         String googleTranslateAudio = "http://translate.google.com/translate_tts?";
         String googleTranslateDetect = "http://www.google.com/uds/GlangDetect?";
-        if(properties != null && properties.getProperty("locale") != null) {
-            locale = properties.getProperty("locale");
+        if(properties != null && properties.getProperties().getProperty("locale") != null) {
+            locale = properties.getProperties().getProperty("locale");
         } else {
             locale = Locale.getDefault().getLanguage();
         }
@@ -74,6 +74,7 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
         dataList.forEach(collection::addTTSElement);
         LinkedList<TTSElement> elements = collection.getFullCollectionAsList();
         bufferAndSpeak(elements);
+        collection.clear();
     }
 
     /**
@@ -89,6 +90,11 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
         }
     }
 
+    /**
+     * buffers the TTS-audio and plays it.
+     * because generating the audio happens in the internet, it first has to be buffered.
+     * @param elements a list containing all the elements
+     */
     private void bufferAndSpeak(LinkedList<TTSElement> elements) {
         while(elements.size() > 0) {
             if(currentBuffer < Buffer) {
@@ -104,6 +110,10 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
         currentBuffer = 0;
     }
 
+    /**
+     * plays the audio
+     * @param sound the InputStream containing the TTS
+     */
     private void speak(InputStream sound) {
         try {
             audio.play(sound);
