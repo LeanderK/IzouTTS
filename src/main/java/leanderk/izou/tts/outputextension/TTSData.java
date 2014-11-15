@@ -2,30 +2,28 @@ package leanderk.izou.tts.outputextension;
 
 /**
  * Holds the Data for TTS.
- * It contains:<br>
- * - String words, which holds the message to be spoken<br>
- * - int priority, which is used to place this particular message in a list of messages.<br>
+ * To get an Instance, use the factory method {@link #createTTSData(String, String, int, String)} or
+ * {@link #createTTSData(String, String, int, String, String, String)}.<br><br>
+ * It contains:
+ * <ul>
+ * <li>String words, which holds the message to be spoken
+ * <li>int priority, which is used to place this particular message in a list of messages.<br>
  *      0 is max priority, maxInt least priority<br>
  *      AVOID 0. It is preserved for really important parts!
- * - String sourceID, which holds the ID where the message was generated<br>
- * - String beforeID, you can use this to place your message before another message<br>
- * - String afterID, you can use this to place your message after another message<br>
+ * <li>String sourceID, which holds the ID where the message was generated
+ * <li>String beforeID, you can use this to place your message before another message
+ * <li>String afterID, you can use this to place your message after another message
+ * </ul>
  */
 @SuppressWarnings("UnusedDeclaration")
 public class TTSData {
     private String words;
-
-    public String getLocale() {
-        return locale;
-    }
-
     private String locale;
     //0 most priority, maxInt least priority
     private int priority;
     private String sourceID;
     private String beforeID;
     private String afterID;
-
 
     private TTSData(String words, String locale, int priority, String sourceID, String beforeID, String afterID) {
         this.words = words;
@@ -35,6 +33,7 @@ public class TTSData {
         this.beforeID = beforeID;
         this.afterID = afterID;
     }
+
 
     private TTSData(String words, String locale, int priority, String sourceID) {
         this.words = words;
@@ -59,11 +58,23 @@ public class TTSData {
         return new TTSData(words, locale, priority, sourceID, beforeID, afterID);
     }
 
+    /**
+     * factory method for TTSData.
+     * for further information about the parameters, see documentation of the class
+     * @param words the message, may be null or empty
+     * @param locale the locale code, must not be null or empty
+     * @param priority the priority
+     * @param sourceID the sourceID, must not be null or empty
+     * @return TTSData an instance of null
+     */
     public static TTSData createTTSData(String words, String locale, int priority, String sourceID) {
         if(sourceID == null || sourceID.trim().isEmpty() || locale == null) return null;
         return new TTSData(words, locale, priority, sourceID);
     }
 
+    public String getLocale() {
+        return locale;
+    }
 
     public String getWords() {
         return words;
