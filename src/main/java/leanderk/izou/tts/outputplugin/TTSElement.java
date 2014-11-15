@@ -160,6 +160,13 @@ class TTSElement implements Comparable<TTSElement> {
         }
     }
 
+    /**
+     * Compares this object with the specified object for order. Returns a negative integer, zero, or a positive integer
+     * as this object is less than, equal to, or greater than the specified object.
+     *
+     * @param o the object to compare to
+     * @return negative if less, zero if equal or positive if greater than o
+     */
     @Override
     public int compareTo(TTSElement o) {
         if (o == null) return 1;
@@ -176,6 +183,9 @@ class TTSElement implements Comparable<TTSElement> {
         abstract void callback();
     }
 
+    /**
+     * A little helper class, which downloads the TTS concurrently.
+     */
     private class BufferWorker implements Callable<InputStream> {
         private final String text;
         private final String languageLocale;
