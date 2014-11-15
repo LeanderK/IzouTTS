@@ -29,6 +29,11 @@
             <artifactId>gtranslate</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>jrichardsz.gtranslate</groupId>
+            <artifactId>gtranslate</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <repositories>
