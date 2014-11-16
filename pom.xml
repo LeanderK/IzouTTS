@@ -7,7 +7,7 @@
     <groupId>leanderk.izou.tts</groupId>
     <artifactId>tts</artifactId>
     <packaging>jar</packaging>
-    <version>0.8-SNAPSHOT</version>
+    <version>0.8.5-SNAPSHOT</version>
     <name>Izou TTS</name>
 
     <properties>
