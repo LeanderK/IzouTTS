@@ -163,7 +163,7 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
             Matcher matcher = pattern.matcher(key);
             if (matcher.matches()) {
                 String words = propertiesContainer.getProperties().getProperty(key);
-                foundList.add(key);
+                foundList.add(words);
             }
         }
         return foundList;
@@ -178,7 +178,7 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
      * @return a String where all the variables are replaced.
      */
     private String replaceVariables(String string, HashMap<String, String> values) {
-        Pattern pattern = Pattern.compile("($(\\w)+)");
+        Pattern pattern = Pattern.compile("(\\$(\\w)+)");
         Matcher matcher = pattern.matcher(string);
         while (matcher.find()) {
             String originalKey = matcher.group();

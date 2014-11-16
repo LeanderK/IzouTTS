@@ -90,7 +90,6 @@ public class TTS extends AddOn{
         return null;
     }
 
-    @Override
     public Path registerPropertiesFile() {
         return null;
     }
