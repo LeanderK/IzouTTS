@@ -5,6 +5,7 @@ import com.gtranslate.context.TranslateEnvironment;
 import intellimate.izou.addon.PropertiesContainer;
 import intellimate.izou.output.OutputExtension;
 import intellimate.izou.output.OutputPlugin;
+import intellimate.izou.system.Context;
 import leanderk.izou.tts.outputextension.TTSData;
 import leanderk.izou.tts.outputextension.TTSOutputExtension;
 
@@ -29,15 +30,17 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
     @SuppressWarnings("FieldCanBeLocal")
     private ExecutorService executor = Executors.newFixedThreadPool(Buffer/2);
     private String locale;
+    private Context context;
 
-    public TTSOutputPlugin() {
-        this(null);
-    }
+    //public TTSOutputPlugin() {
+    //    this(null);
+    //}
 
     @SuppressWarnings("WeakerAccess")
-    public TTSOutputPlugin(@SuppressWarnings("SameParameterValue") PropertiesContainer properties) {
-        super(ID);
+    public TTSOutputPlugin(@SuppressWarnings("SameParameterValue") PropertiesContainer properties, Context context) {
+        super(ID, context);
         collection = new TTSElementCollection(executor);
+        this.context = context;
 
         //required values
         String enableProxy = "false";
@@ -118,7 +121,7 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
         try {
             audio.play(sound);
         } catch (Exception e) {
-            e.printStackTrace();
+            context.logger.getLogger().error(e);
         }
     }
 }
