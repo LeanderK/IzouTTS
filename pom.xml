@@ -7,13 +7,13 @@
     <groupId>leanderk.izou.tts</groupId>
     <artifactId>tts</artifactId>
     <packaging>jar</packaging>
-    <version>0.8.5-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
     <name>Izou TTS</name>
 
     <properties>
         <plugin.id>leanderk.izou.tts</plugin.id>
         <plugin.class>leanderk.izou.tts.ZipFileManager</plugin.class>
-        <plugin.version>0.5</plugin.version>
+        <plugin.version>0.9</plugin.version>
         <plugin.provider>Leander Kurscheidt</plugin.provider>
         <plugin.dependencies />
     </properties>

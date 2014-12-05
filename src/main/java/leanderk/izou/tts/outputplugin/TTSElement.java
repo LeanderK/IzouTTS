@@ -1,6 +1,7 @@
 package leanderk.izou.tts.outputplugin;
 
 import com.gtranslate.Audio;
+import intellimate.izou.system.Context;
 
 import java.io.InputStream;
 import java.text.BreakIterator;
@@ -18,6 +19,7 @@ import java.util.concurrent.Future;
  * Buffer etc.
  * Instances are stored and ordered in TTSElementCollection
  */
+@SuppressWarnings("UnusedDeclaration")
 class TTSElement implements Comparable<TTSElement> {
     private final LinkedList<Future<InputStream>> futures = new LinkedList<>();
     private String ID;
@@ -28,16 +30,18 @@ class TTSElement implements Comparable<TTSElement> {
     private PriorityQueue<TTSElement> after = null;
     private PriorityQueue<TTSElement> dimension = null;
     private ExecutorService threadPool;
+    private Context context;
 
-
-    public TTSElement(String ID) {
+    public TTSElement(String ID, Context context) {
         this.ID = ID;
+        this.context = context;
     }
 
-    public TTSElement(String words, String locale, String ID, int priority, ExecutorService threadPool) {
+    public TTSElement(String words, Context context, String locale, String ID, int priority, ExecutorService threadPool) {
         this.words = words;
         this.locale = locale;
         this.ID = ID;
+        this.context = context;
         this.priority = Math.abs(priority);
         this.threadPool = threadPool;
     }
@@ -57,8 +61,7 @@ class TTSElement implements Comparable<TTSElement> {
             try {
                 inputStreams.add(future.get());
             } catch (InterruptedException | ExecutionException e) {
-                //TODO Exception handling
-                e.printStackTrace();
+                context.logger.getLogger().error("Error while trying to create the TTS-InputStream", e);
             }
         }
         return inputStreams;

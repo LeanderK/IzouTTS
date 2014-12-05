@@ -39,7 +39,7 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
     @SuppressWarnings("WeakerAccess")
     public TTSOutputPlugin(@SuppressWarnings("SameParameterValue") PropertiesContainer properties, Context context) {
         super(ID, context);
-        collection = new TTSElementCollection(executor);
+        collection = new TTSElementCollection(executor, context);
         this.context = context;
 
         //required values
