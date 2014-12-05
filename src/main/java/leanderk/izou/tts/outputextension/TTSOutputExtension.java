@@ -29,12 +29,22 @@ import java.util.regex.Pattern;
  * <code>
  * locale_category_id(_index)<br>
  * <br>
- * locale&nbsp;&nbsp;&nbsp;= the current locale<br>
- * category = s for sentence of p it part of a sentence<br>
- * id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= the id of the key<br>
- * index&nbsp;&nbsp;&nbsp;&nbsp;= a unique number if there are multiple entries<br></code>
+ * <table summary="">
+ *   <tr>
+ *      <td>locale</td><td>= the current locale</td>
+ *   </tr>
+ *   <tr>
+ *      <td>category</td><td>= s for sentence of p it part of a sentence</td>
+ *   </tr>
+ *   <tr>
+ *      <td>id</td><td>= the id of the key</td>
+ *   </tr>
+ *   <tr>
+ *      <td>index</td><td>= ta unique number if there are multiple entries</td>
+ *   </tr>
+ * </table>
  * <br>
- * example: <code>en_s_greeting_13</code><br>
+ * example: <code>en_s_greeting_13</code><br><br>
  * If there are multiple keys, it will choose a random one.<br>
  * It will then retrieve the value. The value can be the sentence to return, or it can contain these elements:<br><br>
  * <code>$key = a variable</code>
