@@ -1,9 +1,14 @@
 package leanderk.izou.tts.outputextension;
 
 import intellimate.izou.addon.PropertiesContainer;
+import intellimate.izou.events.Event;
 import intellimate.izou.output.OutputExtension;
+import intellimate.izou.system.Context;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,14 +56,20 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
      * @param propertiesContainer the PropertiesContainer used for generating Sentences
      *                            (you can retrieve from the AddOn Class)
      */
-    public TTSOutputExtension(String id, PropertiesContainer propertiesContainer) {
-        super(id);
+    public TTSOutputExtension(String id, PropertiesContainer propertiesContainer, Context context) {
+        super(id, context);
         this.propertiesContainer = propertiesContainer;
     }
 
+    /**
+     * the main method of the outputExtension, it converts the resources into the necessary data format and returns it
+     * to the outputPlugin
+     *
+     * @param event
+     */
     @Override
-    public final TTSData call() throws Exception {
-        if (canGenerateForLanguage(locale)) return generateSentence();
+    public TTSData generate(Event event) {
+        if (canGenerateForLanguage(locale)) return generateSentence(event);
         return null;
     }
 
@@ -87,7 +98,7 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
      *
      * @return an instance of TTSData, which will then be consumed by the TTSOutputPlugin
      */
-    public abstract TTSData generateSentence();
+    public abstract TTSData generateSentence(Event event);
 
     /**
      * checks if the TTSOutputExtension can generate TTSData fot the locale
