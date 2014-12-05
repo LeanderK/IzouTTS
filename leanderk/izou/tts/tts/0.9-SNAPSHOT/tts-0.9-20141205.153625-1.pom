@@ -7,13 +7,13 @@
     <groupId>leanderk.izou.tts</groupId>
     <artifactId>tts</artifactId>
     <packaging>jar</packaging>
-    <version>0.8-SNAPSHOT</version>
+    <version>0.9-SNAPSHOT</version>
     <name>Izou TTS</name>
 
     <properties>
         <plugin.id>leanderk.izou.tts</plugin.id>
         <plugin.class>leanderk.izou.tts.ZipFileManager</plugin.class>
-        <plugin.version>0.5</plugin.version>
+        <plugin.version>0.9</plugin.version>
         <plugin.provider>Leander Kurscheidt</plugin.provider>
         <plugin.dependencies />
     </properties>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>intellimate.izou</groupId>
             <artifactId>Izou</artifactId>
-            <version>0.9.4.8-SNAPSHOT</version>
+            <version>0.9.9.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -174,12 +174,12 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <compilerArgument></compilerArgument>
                 </configuration>
             </plugin>
         </plugins>
