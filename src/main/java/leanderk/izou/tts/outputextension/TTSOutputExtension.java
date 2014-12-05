@@ -75,7 +75,7 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
      * the main method of the outputExtension, it converts the resources into the necessary data format and returns it
      * to the outputPlugin
      *
-     * @param event
+     * @param event the Event to generate for
      */
     @Override
     public TTSData generate(Event event) {
