@@ -1,5 +1,6 @@
 package leanderk.izou.tts.outputplugin;
 
+import intellimate.izou.system.Context;
 import leanderk.izou.tts.outputextension.TTSData;
 
 import java.util.HashMap;
@@ -14,10 +15,12 @@ import java.util.concurrent.ExecutorService;
 class TTSElementCollection {
     private final HashMap<String, TTSElement> hashMap = new HashMap<>();
     private final PriorityQueue<TTSElement> queue = new PriorityQueue<>();
+    private Context context;
     private ExecutorService threadPool;
 
-    TTSElementCollection(ExecutorService threadPool) {
+    TTSElementCollection(ExecutorService threadPool, Context context) {
         this.threadPool = threadPool;
+        this.context = context;
     }
 
     /**
@@ -36,7 +39,7 @@ class TTSElementCollection {
             element.setWords(data.getWords());
         } else {
             //create new Element
-            element = new TTSElement(data.getWords(), data.getLocale(), data.getSourceID(), data.getPriority(), threadPool);
+            element = new TTSElement(data.getWords(), context, data.getLocale(), data.getSourceID(), data.getPriority(), threadPool);
             hashMap.put(data.getSourceID(), element);
         }
         //it is referencing to other element
@@ -50,7 +53,7 @@ class TTSElementCollection {
             if (hashMap.containsKey(parentID)) {
                 parent = hashMap.get(parentID);
             } else {
-                parent = new TTSElement(parentID);
+                parent = new TTSElement(parentID, context);
                 parent.setDimension(queue);
                 hashMap.put(parent.getID(), parent);
                 queue.add(parent);
