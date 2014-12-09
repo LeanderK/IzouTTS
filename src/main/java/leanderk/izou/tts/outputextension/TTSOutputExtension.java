@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
  * The details are more complicated:<br>
  * First, you have to pass an ID.
  * Then the method will get all the keys from the properties-file, search for the following pattern:<br><br>
- * <code>
  * locale_category_id(_index)<br>
  * <br>
  * <table summary="">
@@ -106,6 +105,7 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
      * override this class to generate the TTSData.
      * it will be called, when canGenerate returns true for the locale
      *
+     * @param event the Event which triggered the generation
      * @return an instance of TTSData, which will then be consumed by the TTSOutputPlugin
      */
     public abstract TTSData generateSentence(Event event);
