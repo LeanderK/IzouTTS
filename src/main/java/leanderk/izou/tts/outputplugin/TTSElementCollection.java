@@ -54,6 +54,7 @@ class TTSElementCollection {
                 parent = hashMap.get(parentID);
             } else {
                 parent = new TTSElement(parentID, context);
+                parent.setPriority(element.getPriority());
                 parent.setDimension(queue);
                 hashMap.put(parent.getID(), parent);
                 queue.add(parent);
