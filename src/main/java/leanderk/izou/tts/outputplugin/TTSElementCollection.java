@@ -37,6 +37,7 @@ class TTSElementCollection {
             element = hashMap.get(data.getSourceID());
             element.setPriority(data.getPriority());
             element.setWords(data.getWords());
+            element.setLocale(data.getLocale());
         } else {
             //create new Element
             element = new TTSElement(data.getWords(), context, data.getLocale(), data.getSourceID(), data.getPriority(), threadPool);
@@ -44,6 +45,7 @@ class TTSElementCollection {
         }
         //it is referencing to other element
         if (data.getAfterID() != null || data.getBeforeID() != null) {
+            if(queue.contains(element)) queue.remove(element);
             String parentID;
             if (data.getAfterID() != null) parentID = data.getAfterID();
             else parentID = data.getBeforeID();
@@ -53,7 +55,7 @@ class TTSElementCollection {
             if (hashMap.containsKey(parentID)) {
                 parent = hashMap.get(parentID);
             } else {
-                parent = new TTSElement(parentID, context);
+                parent = new TTSElement(parentID, context, threadPool);
                 parent.setPriority(element.getPriority());
                 parent.setDimension(queue);
                 hashMap.put(parent.getID(), parent);
@@ -66,7 +68,7 @@ class TTSElementCollection {
 
         } else {
             element.setDimension(queue);
-            queue.add(element);
+            if(!queue.contains(element)) queue.add(element);
         }
 
     }
