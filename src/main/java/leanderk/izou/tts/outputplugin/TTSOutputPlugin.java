@@ -87,7 +87,7 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
      */
     @Override
     public void outputExtensionWasAdded(OutputExtension<TTSData> outputExtension) {
-        if(TTSOutputExtension.class.isInstance(outputExtension)) {
+        if(outputExtension instanceof TTSOutputExtension) {
             TTSOutputExtension extension = (TTSOutputExtension)outputExtension;
             extension.setLocale(locale);
         }
@@ -101,8 +101,9 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
     private void bufferAndSpeak(LinkedList<TTSElement> elements) {
         while(elements.size() > 0) {
             if(currentBuffer < Buffer) {
-                elements.stream().filter(element -> !element.bufferingStarted()).forEach(
-                        element -> element.buffer(() -> currentBuffer--));
+                elements.stream().filter(element -> !element.bufferingStarted())
+                            .limit(Buffer - currentBuffer)
+                            .forEach(element -> element.buffer(() -> currentBuffer--));
             }
             if(elements.get(0).bufferingFinished()) {
                 TTSElement element = elements.pop();

@@ -32,9 +32,10 @@ class TTSElement implements Comparable<TTSElement> {
     private ExecutorService threadPool;
     private Context context;
 
-    public TTSElement(String ID, Context context) {
+    public TTSElement(String ID, Context context, ExecutorService threadPool) {
         this.ID = ID;
         this.context = context;
+        this.threadPool = threadPool;
     }
 
     public TTSElement(String words, Context context, String locale, String ID, int priority, ExecutorService threadPool) {
@@ -48,6 +49,10 @@ class TTSElement implements Comparable<TTSElement> {
 
     public void setWords(String words) {
         this.words = words;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 
     /**
@@ -68,10 +73,17 @@ class TTSElement implements Comparable<TTSElement> {
     }
 
     public boolean bufferingStarted() {
-        return !futures.isEmpty();
+        if(words != null && !words.isEmpty()) {
+            return !futures.isEmpty();
+        }
+        return true;
     }
 
     public boolean bufferingFinished() {
+        if(words == null || words.isEmpty()) {
+            return true;
+        }
+
         boolean finished = true;
         if (futures.isEmpty()) return false;
         for (Future future : futures) {
