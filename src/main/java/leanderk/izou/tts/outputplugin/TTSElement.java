@@ -149,6 +149,7 @@ class TTSElement implements Comparable<TTSElement> {
      * @param callback will be called after finishing
      */
     public void buffer(Callback callback) {
+        context.logger.getLogger().debug("buffering: " + getID());
         if (words.length() > 100) {
             handleLongText(words, callback);
         } else {

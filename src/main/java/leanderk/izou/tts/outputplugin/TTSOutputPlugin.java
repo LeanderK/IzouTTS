@@ -72,6 +72,7 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
      */
     @Override
     public void renderFinalOutput() {
+        context.logger.getLogger().debug("rendering output");
         List<TTSData> dataList = getTDoneList();
         collection.clear();
         dataList.forEach(collection::addTTSElement);
@@ -108,6 +109,7 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
             if(elements.get(0).bufferingFinished()) {
                 TTSElement element = elements.pop();
                 LinkedList<InputStream> inputStreams = element.getInputStreams();
+                context.logger.getLogger().debug("speaking: " + element.getID());
                 inputStreams.forEach(this::speak);
             }
         }

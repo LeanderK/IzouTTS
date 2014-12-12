@@ -78,7 +78,11 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
      */
     @Override
     public TTSData generate(Event event) {
-        if (canGenerateForLanguage(locale)) return generateSentence(event);
+        if (canGenerateForLanguage(locale)) {
+            getContext().logger.getLogger().debug("generating Sentence in locale: " + locale
+                                                         + " for OutputExtension " + getID());
+            return generateSentence(event);
+        }
         return null;
     }
 
