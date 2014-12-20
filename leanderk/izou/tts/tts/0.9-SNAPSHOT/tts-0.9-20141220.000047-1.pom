@@ -25,9 +25,9 @@
             <version>0.9.9.7-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
+            <groupId>jrichardsz.gtranslate</groupId>
+            <artifactId>gtranslate</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>jrichardsz.gtranslate</groupId>
