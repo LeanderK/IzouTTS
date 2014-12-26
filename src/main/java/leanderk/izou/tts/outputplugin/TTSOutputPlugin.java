@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
  * Output TTS Plugin
  * TTSOutputExtensions generate the Sentences and this plugin is is responsible for speech synthesization.
  */
-public class TTSOutputPlugin extends OutputPlugin<TTSData>{
+public class TTSOutputPlugin extends OutputPlugin<TTSData> {
     @SuppressWarnings("WeakerAccess")
     public static final String ID = TTSOutputPlugin.class.getCanonicalName();
     private final TTSElementCollection collection;
