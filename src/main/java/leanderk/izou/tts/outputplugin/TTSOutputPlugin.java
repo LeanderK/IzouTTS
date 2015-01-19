@@ -2,12 +2,11 @@ package leanderk.izou.tts.outputplugin;
 
 import com.gtranslate.Audio;
 import com.gtranslate.context.TranslateEnvironment;
-import intellimate.izou.addon.PropertiesContainer;
 import intellimate.izou.output.OutputExtension;
 import intellimate.izou.output.OutputPlugin;
+import intellimate.izou.properties.PropertiesContainer;
 import intellimate.izou.system.Context;
-import leanderk.izou.tts.outputextension.TTSData;
-import leanderk.izou.tts.outputextension.TTSOutputExtension;
+import leanderk.izou.tts.outputextension.*;
 
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -37,10 +36,11 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
     //}
 
     @SuppressWarnings("WeakerAccess")
-    public TTSOutputPlugin(@SuppressWarnings("SameParameterValue") PropertiesContainer properties, Context context) {
+    public TTSOutputPlugin(@SuppressWarnings("SameParameterValue")  Context context) {
         super(ID, context);
         collection = new TTSElementCollection(executor, context);
         this.context = context;
+        PropertiesContainer properties = context.properties.getPropertiesContainer();
 
         //required values
         String enableProxy = "false";
@@ -73,7 +73,7 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
     @Override
     public void renderFinalOutput() {
         context.logger.getLogger().debug("rendering output");
-        List<TTSData> dataList = getTDoneList();
+        List<TTSData> dataList = pollTDoneList();
         collection.clear();
         dataList.forEach(collection::addTTSElement);
         LinkedList<TTSElement> elements = collection.getFullCollectionAsList();
@@ -88,9 +88,12 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
      */
     @Override
     public void outputExtensionWasAdded(OutputExtension<TTSData> outputExtension) {
-        if(outputExtension instanceof TTSOutputExtension) {
+        try {
             TTSOutputExtension extension = (TTSOutputExtension)outputExtension;
             extension.setLocale(locale);
+            context.logger.getLogger().debug("Setting locale for:" + extension.getID());
+        } catch (Exception e) {
+            context.logger.getLogger().error("Error while trying set locale", e);
         }
     }
 

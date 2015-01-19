@@ -1,8 +1,8 @@
 package leanderk.izou.tts.outputextension;
 
-import intellimate.izou.addon.PropertiesContainer;
 import intellimate.izou.events.Event;
 import intellimate.izou.output.OutputExtension;
+import intellimate.izou.properties.PropertiesContainer;
 import intellimate.izou.system.Context;
 
 import java.util.Enumeration;
@@ -62,12 +62,10 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
      * creates a new outputExtension with a new id
      *
      * @param id                  the id to be set to the id of outputExtension
-     * @param propertiesContainer the PropertiesContainer used for generating Sentences
-     *                            (you can retrieve from the AddOn Class)
      */
-    public TTSOutputExtension(String id, PropertiesContainer propertiesContainer, Context context) {
+    public TTSOutputExtension(String id, Context context) {
         super(id, context);
-        this.propertiesContainer = propertiesContainer;
+        this.propertiesContainer = context.properties.getPropertiesContainer();
     }
 
     /**
@@ -203,12 +201,13 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
      * @return a String where all the variables are replaced.
      */
     private String replaceVariables(String string, HashMap<String, String> values) {
-        Pattern pattern = Pattern.compile("(\\$(\\w)+)");
+        Pattern pattern = Pattern.compile("(\\$[^_\\s\\.]+)");
         Matcher matcher = pattern.matcher(string);
         while (matcher.find()) {
             String originalKey = matcher.group();
             String key = originalKey.replace("$", "");
-            string = string.replace(originalKey, values.get(key));
+            String value = values.get(key);
+            string = string.replace(originalKey, value == null ? "" : value);
         }
         return string;
     }
@@ -223,11 +222,11 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
      * @return a string where all the references got replaced
      */
     private String replaceNames(String string, HashMap<String, String> values, int recursion) {
-        Pattern pattern = Pattern.compile("(§(\\w)+)");
+        Pattern pattern = Pattern.compile("(§[^_\\s\\.]+)");
         Matcher matcher = pattern.matcher(string);
         while (matcher.find()) {
             String originalKey = matcher.group();
-            String key = originalKey.replace("$", "");
+            String key = originalKey.replace("§", "");
             String newWords;
             if (recursion >= 100) {
                 newWords = "";

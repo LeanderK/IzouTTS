@@ -5,9 +5,7 @@ import intellimate.izou.system.Context;
 
 import java.io.InputStream;
 import java.text.BreakIterator;
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -21,7 +19,7 @@ import java.util.concurrent.Future;
  */
 @SuppressWarnings("UnusedDeclaration")
 class TTSElement implements Comparable<TTSElement> {
-    private final LinkedList<Future<InputStream>> futures = new LinkedList<>();
+    private final List<Future<InputStream>> futures = new ArrayList<>();
     private String ID;
     private String words;
     private String locale;
@@ -56,7 +54,7 @@ class TTSElement implements Comparable<TTSElement> {
     }
 
     /**
-     * returns the all InputStreams
+     * returns the all InputStreams and CLEARS them.
      *
      * @return a List containing InputStreams
      */
@@ -69,6 +67,7 @@ class TTSElement implements Comparable<TTSElement> {
                 context.logger.getLogger().error("Error while trying to create the TTS-InputStream", e);
             }
         }
+        futures.clear();
         return inputStreams;
     }
 
@@ -195,10 +194,13 @@ class TTSElement implements Comparable<TTSElement> {
             if (wordsStringBuilder.length() + substring.length() > 100) {
                 futures.add(threadPool.submit(new BufferWorker(wordsStringBuilder.toString(), locale, callback)));
                 wordsStringBuilder.setLength(0);
+                wordsStringBuilder.append(substring);
             } else {
                 wordsStringBuilder.append(substring);
             }
         }
+        if (wordsStringBuilder.length() != 0)
+            futures.add(threadPool.submit(new BufferWorker(wordsStringBuilder.toString(), locale, callback)));
     }
 
     /**
@@ -213,10 +215,10 @@ class TTSElement implements Comparable<TTSElement> {
     public int compareTo(TTSElement o) {
         if (o == null) return 1;
         if (this.getPriority() < o.getPriority()) {
-            return 1;
+            return -1;
         }
         if (this.getPriority() > o.getPriority()) {
-            return -1;
+            return 1;
         }
         return 0;
     }
