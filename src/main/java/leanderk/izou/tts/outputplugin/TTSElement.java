@@ -49,6 +49,10 @@ class TTSElement implements Comparable<TTSElement> {
         this.words = words;
     }
 
+    public String getWords() {
+        return words;
+    }
+
     public void setLocale(String locale) {
         this.locale = locale;
     }

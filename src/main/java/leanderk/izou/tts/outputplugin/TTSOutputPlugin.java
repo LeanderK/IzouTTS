@@ -7,6 +7,7 @@ import intellimate.izou.output.OutputPlugin;
 import intellimate.izou.properties.PropertiesContainer;
 import intellimate.izou.system.Context;
 import leanderk.izou.tts.outputextension.*;
+import leanderk.izou.tts.outputextension.TTSOutputExtension;
 
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -14,17 +15,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Output TTS Plugin
  * TTSOutputExtensions generate the Sentences and this plugin is is responsible for speech synthesization.
  */
-public class TTSOutputPlugin extends OutputPlugin<TTSData>{
+public class TTSOutputPlugin extends OutputPlugin<TTSData> {
     @SuppressWarnings("WeakerAccess")
     public static final String ID = TTSOutputPlugin.class.getCanonicalName();
     private final TTSElementCollection collection;
     private final int Buffer = 10;
-    private int currentBuffer = 0;
+    private AtomicInteger currentBuffer = new AtomicInteger(0);
     private final Audio audio;
     @SuppressWarnings("FieldCanBeLocal")
     private ExecutorService executor = Executors.newFixedThreadPool(Buffer/2);
@@ -74,9 +76,11 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
     public void renderFinalOutput() {
         context.logger.getLogger().debug("rendering output");
         List<TTSData> dataList = pollTDoneList();
+        context.logger.getLogger().debug("got " + dataList.size() + "TTSData Elements");
         collection.clear();
         dataList.forEach(collection::addTTSElement);
         LinkedList<TTSElement> elements = collection.getFullCollectionAsList();
+        context.logger.getLogger().debug("created "+ elements.size() + " TTSElements");
         bufferAndSpeak(elements);
         collection.clear();
     }
@@ -104,19 +108,25 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData>{
      */
     private void bufferAndSpeak(LinkedList<TTSElement> elements) {
         while(elements.size() > 0) {
-            if(currentBuffer < Buffer) {
+            if(currentBuffer.get() < Buffer) {
                 elements.stream().filter(element -> !element.bufferingStarted())
-                            .limit(Buffer - currentBuffer)
-                            .forEach(element -> element.buffer(() -> currentBuffer--));
+                            .peek(element -> context.logger.getLogger().debug("able to buffer" +
+                                    (Buffer - currentBuffer.get()) + " elements"))
+                        .limit(Buffer - currentBuffer.get())
+                        .peek(element -> context.logger.getLogger().debug("start buffering: " + element.getID()))
+                        .forEach(element -> element.buffer(() -> {
+                            currentBuffer.decrementAndGet();
+                            context.logger.getLogger().debug("buffering " + element.getID() + "finished");
+                        }));
             }
             if(elements.get(0).bufferingFinished()) {
                 TTSElement element = elements.pop();
                 LinkedList<InputStream> inputStreams = element.getInputStreams();
-                context.logger.getLogger().debug("speaking: " + element.getID());
+                context.logger.getLogger().debug("speaking: " + element.getID()+ ": " + element.getWords());
                 inputStreams.forEach(this::speak);
             }
         }
-        currentBuffer = 0;
+        currentBuffer.set(0);
     }
 
     /**
