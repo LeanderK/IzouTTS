@@ -13,8 +13,6 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -28,8 +26,6 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData> {
     private final int Buffer = 10;
     private AtomicInteger currentBuffer = new AtomicInteger(0);
     private final Audio audio;
-    @SuppressWarnings("FieldCanBeLocal")
-    private ExecutorService executor = Executors.newFixedThreadPool(Buffer/2);
     private String locale;
     private Context context;
 
@@ -40,7 +36,7 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData> {
     @SuppressWarnings("WeakerAccess")
     public TTSOutputPlugin(@SuppressWarnings("SameParameterValue")  Context context) {
         super(ID, context);
-        collection = new TTSElementCollection(executor, context);
+        collection = new TTSElementCollection(context.threadPool.getThreadPool(), context);
         this.context = context;
         PropertiesContainer properties = context.properties.getPropertiesContainer();
 
@@ -110,19 +106,19 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData> {
         while(elements.size() > 0) {
             if(currentBuffer.get() < Buffer) {
                 elements.stream().filter(element -> !element.bufferingStarted())
-                            .peek(element -> context.logger.getLogger().debug("able to buffer" +
+                            .peek(element -> context.logger.getLogger().debug("able to buffer " +
                                     (Buffer - currentBuffer.get()) + " elements"))
                         .limit(Buffer - currentBuffer.get())
-                        .peek(element -> context.logger.getLogger().debug("start buffering: " + element.getID()))
                         .forEach(element -> element.buffer(() -> {
                             currentBuffer.decrementAndGet();
-                            context.logger.getLogger().debug("buffering " + element.getID() + "finished");
+                            context.logger.getLogger().debug("buffering " + element.getID() + " finished");
                         }));
             }
             if(elements.get(0).bufferingFinished()) {
                 TTSElement element = elements.pop();
                 LinkedList<InputStream> inputStreams = element.getInputStreams();
-                context.logger.getLogger().debug("speaking: " + element.getID()+ ": " + element.getWords());
+                context.logger.getLogger().debug("speaking: " + element.getID()+ ": <" + element.getWords() + "> " +
+                        "with " + inputStreams.size() + " InputStreams");
                 inputStreams.forEach(this::speak);
             }
         }

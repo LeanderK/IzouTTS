@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
 class TTSElement implements Comparable<TTSElement> {
     private final List<Future<InputStream>> futures = new ArrayList<>();
     private String ID;
-    private String words;
+    private String words = "";
     private String locale;
     private int priority = Integer.MAX_VALUE;
     private PriorityQueue<TTSElement> before = null;
@@ -254,15 +254,23 @@ class TTSElement implements Comparable<TTSElement> {
         @Override
         public InputStream call() throws Exception {
             Audio audio = Audio.getInstance();
+            InputStream audioIs = null;
+            try {
+                audioIs = audio.getAudio(text, languageLocale);
+            } catch (Exception e) {
+                context.logger.getLogger().error("an error occurred while trying to create InputStream for " + getID() +
+                        " which text:<" + text + "> and locale:<" + locale + ">", e);
+                throw e;
+            }
             if (callback != null) {
                 int running = 0;
                 for (Future future : futures) {
-                    if (future.isDone()) running++;
+                    if (!future.isDone()) running++;
                 }
                 //last remaining
                 if (running == 1) callback.callback();
             }
-            return audio.getAudio(text, languageLocale);
+            return audioIs;
         }
     }
 }
