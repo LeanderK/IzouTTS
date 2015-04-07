@@ -1,21 +1,19 @@
 package leanderk.izou.tts;
 
-import intellimate.izou.activator.Activator;
-import intellimate.izou.addon.AddOn;
-import intellimate.izou.contentgenerator.ContentGenerator;
-import intellimate.izou.events.EventsController;
-import intellimate.izou.output.OutputExtension;
-import intellimate.izou.output.OutputPlugin;
 import leanderk.izou.tts.outputplugin.TTSOutputPlugin;
+import org.intellimate.izou.output.OutputPluginModel;
+import org.intellimate.izou.sdk.activator.Activator;
+import org.intellimate.izou.sdk.addon.AddOn;
+import org.intellimate.izou.sdk.contentgenerator.ContentGenerator;
+import org.intellimate.izou.sdk.events.EventsController;
+import org.intellimate.izou.sdk.output.OutputExtension;
 import ro.fortsoft.pf4j.Extension;
-
-import java.nio.file.Path;
 
 /**
  * Created by LeanderK on 01/11/14.
  */
 @Extension
-public class TTS extends AddOn{
+public class TTS extends AddOn {
 
     @SuppressWarnings("WeakerAccess")
     public static final String ID = TTS.class.getCanonicalName();
@@ -79,8 +77,8 @@ public class TTS extends AddOn{
     }
 
     @Override
-    public OutputPlugin[] registerOutputPlugin() {
-        OutputPlugin[] outputPlugins = new OutputPlugin[1];
+    public OutputPluginModel[] registerOutputPlugin() {
+        OutputPluginModel[] outputPlugins = new OutputPluginModel[1];
         outputPlugins[0] = new TTSOutputPlugin(getContext());
         return outputPlugins;
     }
@@ -88,22 +86,5 @@ public class TTS extends AddOn{
     @Override
     public OutputExtension[] registerOutputExtension() {
         return null;
-    }
-
-    public Path registerPropertiesFile() {
-        return null;
-    }
-
-    /**
-     * An ID must always be unique.
-     * A Class like Activator or OutputPlugin can just provide their .class.getCanonicalName()
-     * If you have to implement this interface multiple times, just concatenate unique Strings to
-     * .class.getCanonicalName()
-     *
-     * @return A String containing an ID
-     */
-    @Override
-    public String getID() {
-        return ID;
     }
 }

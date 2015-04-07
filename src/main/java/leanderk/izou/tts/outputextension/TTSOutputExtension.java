@@ -1,9 +1,10 @@
 package leanderk.izou.tts.outputextension;
 
-import intellimate.izou.events.Event;
-import intellimate.izou.output.OutputExtension;
-import intellimate.izou.properties.PropertiesContainer;
-import intellimate.izou.system.Context;
+import org.intellimate.izou.events.EventModel;
+import org.intellimate.izou.sdk.Context;
+import org.intellimate.izou.sdk.output.OutputExtension;
+import org.intellimate.izou.sdk.output.OutputExtensionArgument;
+import org.intellimate.izou.sdk.properties.PropertiesAssistant;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -53,9 +54,9 @@ import java.util.regex.Pattern;
  * Full example: <code>en_s_greeting_13 = Hello $name, §joke.</code>
  */
 @SuppressWarnings("UnusedDeclaration")
-public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
+public abstract class TTSOutputExtension extends OutputExtensionArgument<TTSData, String> {
 
-    private PropertiesContainer propertiesContainer;
+    private PropertiesAssistant propertiesContainer;
     private String locale;
 
     /**
@@ -65,7 +66,7 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
      */
     public TTSOutputExtension(String id, Context context) {
         super(id, context);
-        this.propertiesContainer = context.properties.getPropertiesContainer();
+        this.propertiesContainer = context.getPropertiesAssistant();
     }
 
     /**
@@ -75,14 +76,16 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
      * @param event the Event to generate for
      */
     @Override
-    public TTSData generate(Event event) {
+    public TTSData generate(EventModel event, String locale) {
+        this.locale = locale;
         if (canGenerateForLanguage(locale)) {
-            getContext().logger.getLogger().debug("generating Sentence in locale: " + locale
-                                                         + " for OutputExtension " + getID());
+            debug("generating Sentence in locale: " + locale + " for OutputExtension " + getID());
             return generateSentence(event);
         }
         return null;
     }
+
+
 
     /**
      * return the locale
@@ -110,7 +113,7 @@ public abstract class TTSOutputExtension extends OutputExtension<TTSData> {
      * @param event the Event which triggered the generation
      * @return an instance of TTSData, which will then be consumed by the TTSOutputPlugin
      */
-    public abstract TTSData generateSentence(Event event);
+    public abstract TTSData generateSentence(EventModel event);
 
     /**
      * checks if the TTSOutputExtension can generate TTSData fot the locale

@@ -2,12 +2,10 @@ package leanderk.izou.tts.outputplugin;
 
 import com.gtranslate.Audio;
 import com.gtranslate.context.TranslateEnvironment;
-import intellimate.izou.output.OutputExtension;
-import intellimate.izou.output.OutputPlugin;
-import intellimate.izou.properties.PropertiesContainer;
-import intellimate.izou.system.Context;
 import leanderk.izou.tts.outputextension.*;
-import leanderk.izou.tts.outputextension.TTSOutputExtension;
+import org.intellimate.izou.sdk.Context;
+import org.intellimate.izou.sdk.output.OutputPluginArgument;
+import org.intellimate.izou.sdk.properties.PropertiesAssistant;
 
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -19,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Output TTS Plugin
  * TTSOutputExtensions generate the Sentences and this plugin is is responsible for speech synthesization.
  */
-public class TTSOutputPlugin extends OutputPlugin<TTSData> {
+public class TTSOutputPlugin extends OutputPluginArgument<String, TTSData> {
     @SuppressWarnings("WeakerAccess")
     public static final String ID = TTSOutputPlugin.class.getCanonicalName();
     private final TTSElementCollection collection;
@@ -27,18 +25,16 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData> {
     private AtomicInteger currentBuffer = new AtomicInteger(0);
     private final Audio audio;
     private String locale;
-    private Context context;
 
     //public TTSOutputPlugin() {
     //    this(null);
     //}
 
     @SuppressWarnings("WeakerAccess")
-    public TTSOutputPlugin(@SuppressWarnings("SameParameterValue")  Context context) {
-        super(ID, context);
-        collection = new TTSElementCollection(context.threadPool.getThreadPool(), context);
-        this.context = context;
-        PropertiesContainer properties = context.properties.getPropertiesContainer();
+    public TTSOutputPlugin(@SuppressWarnings("SameParameterValue") Context context) {
+        super(context, ID);
+        collection = new TTSElementCollection(context.getThreadPool().getThreadPool(), context);
+        PropertiesAssistant properties = context.getPropertiesAssistant();
 
         //required values
         String enableProxy = "false";
@@ -69,32 +65,15 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData> {
      * The processed content-data objects are found in tDoneProcessed
      */
     @Override
-    public void renderFinalOutput() {
-        context.logger.getLogger().debug("rendering output");
-        List<TTSData> dataList = pollTDoneList();
-        context.logger.getLogger().debug("got " + dataList.size() + "TTSData Elements");
+    public void renderFinalOutput(List<TTSData> data) {
+        debug("rendering output");
+        debug("got " + data.size() + "TTSData Elements");
         collection.clear();
-        dataList.forEach(collection::addTTSElement);
+        data.forEach(element -> collection.addTTSElement(element));
         LinkedList<TTSElement> elements = collection.getFullCollectionAsList();
-        context.logger.getLogger().debug("created "+ elements.size() + " TTSElements");
+        debug("created " + elements.size() + " TTSElements");
         bufferAndSpeak(elements);
         collection.clear();
-    }
-
-    /**
-     * event is called when an output-extension is added to this output-plugin
-     *
-     * @param outputExtension the outputExtension that was added to the outputPlugin
-     */
-    @Override
-    public void outputExtensionWasAdded(OutputExtension<TTSData> outputExtension) {
-        try {
-            TTSOutputExtension extension = (TTSOutputExtension)outputExtension;
-            extension.setLocale(locale);
-            context.logger.getLogger().debug("Setting locale for:" + extension.getID());
-        } catch (Exception e) {
-            context.logger.getLogger().error("Error while trying set locale", e);
-        }
     }
 
     /**
@@ -106,18 +85,18 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData> {
         while(elements.size() > 0) {
             if(currentBuffer.get() < Buffer) {
                 elements.stream().filter(element -> !element.bufferingStarted())
-                            .peek(element -> context.logger.getLogger().debug("able to buffer " +
+                            .peek(element -> debug("able to buffer " +
                                     (Buffer - currentBuffer.get()) + " elements"))
                         .limit(Buffer - currentBuffer.get())
                         .forEach(element -> element.buffer(() -> {
                             currentBuffer.decrementAndGet();
-                            context.logger.getLogger().debug("buffering " + element.getID() + " finished");
+                            debug("buffering " + element.getID() + " finished");
                         }));
             }
             if(elements.get(0).bufferingFinished()) {
                 TTSElement element = elements.pop();
                 LinkedList<InputStream> inputStreams = element.getInputStreams();
-                context.logger.getLogger().debug("speaking: " + element.getID()+ ": <" + element.getWords() + "> " +
+                debug("speaking: " + element.getID() + ": <" + element.getWords() + "> " +
                         "with " + inputStreams.size() + " InputStreams");
                 inputStreams.forEach(this::speak);
             }
@@ -133,7 +112,17 @@ public class TTSOutputPlugin extends OutputPlugin<TTSData> {
         try {
             audio.play(sound);
         } catch (Exception e) {
-            context.logger.getLogger().error(e);
+            error("Error while trying to play sound", e);
         }
+    }
+
+    /**
+     * returns the argument for the OutputExtensions
+     *
+     * @return the argument
+     */
+    @Override
+    public String getArgument() {
+        return locale;
     }
 }

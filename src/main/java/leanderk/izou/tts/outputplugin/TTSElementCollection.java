@@ -1,6 +1,6 @@
 package leanderk.izou.tts.outputplugin;
 
-import intellimate.izou.system.Context;
+import org.intellimate.izou.sdk.Context;
 import leanderk.izou.tts.outputextension.*;
 
 import java.util.HashMap;

@@ -1,6 +1,6 @@
-import intellimate.izou.addon.AddOn;
-import intellimate.izou.main.Main;
 import leanderk.izou.tts.TTS;
+import org.intellimate.izou.addon.AddOnModel;
+import org.intellimate.izou.main.Main;
 
 import java.util.LinkedList;
 
@@ -35,7 +35,7 @@ public class Debug {
             e.printStackTrace();
         }
         */
-        LinkedList<AddOn> addOns = new LinkedList<>();
+        LinkedList<AddOnModel> addOns = new LinkedList<>();
         addOns.add(new TTS());
         Main main = new Main(addOns);
     }

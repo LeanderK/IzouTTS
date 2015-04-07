@@ -1,7 +1,7 @@
 package leanderk.izou.tts.outputplugin;
 
 import com.gtranslate.Audio;
-import intellimate.izou.system.Context;
+import org.intellimate.izou.sdk.Context;
 
 import java.io.InputStream;
 import java.text.BreakIterator;
@@ -68,7 +68,7 @@ class TTSElement implements Comparable<TTSElement> {
             try {
                 inputStreams.add(future.get());
             } catch (InterruptedException | ExecutionException e) {
-                context.logger.getLogger().error("Error while trying to create the TTS-InputStream", e);
+                context.getLogger().error("Error while trying to create the TTS-InputStream", e);
             }
         }
         futures.clear();
@@ -152,7 +152,7 @@ class TTSElement implements Comparable<TTSElement> {
      * @param callback will be called after finishing
      */
     public void buffer(Callback callback) {
-        context.logger.getLogger().debug("buffering: " + getID());
+        context.getLogger().debug("buffering: " + getID());
         if (words.length() > 100) {
             handleLongText(words, callback);
         } else {
@@ -258,7 +258,7 @@ class TTSElement implements Comparable<TTSElement> {
             try {
                 audioIs = audio.getAudio(text, languageLocale);
             } catch (Exception e) {
-                context.logger.getLogger().error("an error occurred while trying to create InputStream for " + getID() +
+                context.getLogger().error("an error occurred while trying to create InputStream for " + getID() +
                         " which text:<" + text + "> and locale:<" + locale + ">", e);
                 throw e;
             }
