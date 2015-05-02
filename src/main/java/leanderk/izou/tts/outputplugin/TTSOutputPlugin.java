@@ -3,6 +3,7 @@ package leanderk.izou.tts.outputplugin;
 import com.gtranslate.Audio;
 import com.gtranslate.context.TranslateEnvironment;
 import leanderk.izou.tts.outputextension.*;
+import org.intellimate.izou.events.EventModel;
 import org.intellimate.izou.sdk.Context;
 import org.intellimate.izou.sdk.output.OutputPluginArgument;
 import org.intellimate.izou.sdk.properties.PropertiesAssistant;
@@ -65,11 +66,11 @@ public class TTSOutputPlugin extends OutputPluginArgument<String, TTSData> {
      * The processed content-data objects are found in tDoneProcessed
      */
     @Override
-    public void renderFinalOutput(List<TTSData> data) {
+    public void renderFinalOutput(List<TTSData> data, EventModel eventModel) {
         debug("rendering output");
         debug("got " + data.size() + "TTSData Elements");
         collection.clear();
-        data.forEach(element -> collection.addTTSElement(element));
+        data.forEach(collection::addTTSElement);
         LinkedList<TTSElement> elements = collection.getFullCollectionAsList();
         debug("created " + elements.size() + " TTSElements");
         bufferAndSpeak(elements);
