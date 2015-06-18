@@ -1,9 +1,14 @@
 package leanderk.izou.tts.outputplugin;
 
 import com.gtranslate.Audio;
+import com.gtranslate.context.TranslateEnvironment;
 import org.intellimate.izou.sdk.Context;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.text.BreakIterator;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -256,7 +261,13 @@ class TTSElement implements Comparable<TTSElement> {
             Audio audio = Audio.getInstance();
             InputStream audioIs = null;
             try {
-                audioIs = audio.getAudio(text, languageLocale);
+                //gor testing
+                //audioIs = audio.getAudio(text, languageLocale);
+                URL url = new URL(TranslateEnvironment.getSystemProperty("google.translate.audio") + "q=" + URLEncoder.encode(text, "UTF-8") + "&tl=" + languageLocale);
+                URLConnection urlConn = url.openConnection();
+                urlConn.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0)");
+                InputStream audioSrc = urlConn.getInputStream();
+                audioIs =  new BufferedInputStream(audioSrc);
             } catch (Exception e) {
                 context.getLogger().error("an error occurred while trying to create InputStream for " + getID() +
                         " which text:<" + text + "> and locale:<" + locale + ">", e);
