@@ -1,8 +1,9 @@
-import leanderk.izou.tts.*;
-import org.intellimate.izou.addon.AddOnModel;
-import org.intellimate.izou.main.Main;
+import com.gtranslate.Audio;
+import com.gtranslate.context.TranslateEnvironment;
+import javazoom.jl.player.Player;
+import leanderk.izou.tts.outputplugin.MRLSoundAudioDevice;
 
-import java.util.LinkedList;
+import java.io.InputStream;
 
 /**
  * Use this class to debug
@@ -10,7 +11,6 @@ import java.util.LinkedList;
 @SuppressWarnings("UnusedAssignment")
 public class Debug {
     public static void main(String[] args) {
-        /*
         String enableProxy = "false";
         String proxy = "my.proxy.com";
         String port= "8080";
@@ -26,16 +26,16 @@ public class Debug {
         InputStream sound = null;
         try {
             sound = audio.getAudio("Gerade hat es 16 Grad und ist großteils bewölkt. ","de");
+            MRLSoundAudioDevice javaSoundAudioDevice = new MRLSoundAudioDevice();
+            javaSoundAudioDevice.setGain(0.1f);
+            Player player = new Player(sound, javaSoundAudioDevice);
+            player.play();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        try {
-            audio.play(sound);
-        } catch (JavaLayerException e) {
-            e.printStackTrace();
-        }*/
+        /*
         LinkedList<AddOnModel> addOns = new LinkedList<>();
         addOns.add(new TTS());
-        Main main = new Main(addOns);
+        Main main = new Main(addOns);*/
     }
 }

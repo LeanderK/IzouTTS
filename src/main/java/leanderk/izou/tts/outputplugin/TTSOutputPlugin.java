@@ -2,7 +2,9 @@ package leanderk.izou.tts.outputplugin;
 
 import com.gtranslate.Audio;
 import com.gtranslate.context.TranslateEnvironment;
-import leanderk.izou.tts.outputextension.*;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
+import leanderk.izou.tts.outputextension.TTSData;
 import org.intellimate.izou.events.EventModel;
 import org.intellimate.izou.sdk.Context;
 import org.intellimate.izou.sdk.output.OutputPluginArgument;
@@ -13,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * Output TTS Plugin
@@ -26,6 +29,8 @@ public class TTSOutputPlugin extends OutputPluginArgument<String, TTSData> {
     private AtomicInteger currentBuffer = new AtomicInteger(0);
     private final Audio audio;
     private String locale;
+    private float gain;
+    private final Object gainLock = new Object();
 
     //public TTSOutputPlugin() {
     //    this(null);
@@ -59,6 +64,27 @@ public class TTSOutputPlugin extends OutputPluginArgument<String, TTSData> {
                 googleTranslateDetect,
                 locale);
         audio = Audio.getInstance();
+        Consumer<String> updateGainFunction = string -> {
+            synchronized (gainLock) {
+                if (string == null || string.isEmpty()) {
+                    gain = 0.5f;
+                    return;
+                }
+                try {
+                    float v = Float.parseFloat(string);
+                    if (v < 0 || v > 1.0) {
+                        gain = 0.5f;
+                    } else {
+                        gain = v;
+                    }
+                } catch (NumberFormatException e) {
+                    gain = 0.5f;
+                }
+            }
+        };
+        updateGainFunction.accept(getContext().getPropertiesAssistant().getProperty("volume"));
+        getContext().getPropertiesAssistant().
+                registerUpdateListener(propertiesAssistant -> updateGainFunction.accept(propertiesAssistant.getProperty("volume")));
     }
 
     /**
@@ -111,9 +137,12 @@ public class TTSOutputPlugin extends OutputPluginArgument<String, TTSData> {
      */
     private void speak(InputStream sound) {
         try {
-            audio.play(sound);
-        } catch (Exception e) {
-            error("Error while trying to play sound", e);
+            MRLSoundAudioDevice javaSoundAudioDevice = new MRLSoundAudioDevice();
+            javaSoundAudioDevice.setGain(gain);
+            Player player = new Player(sound, javaSoundAudioDevice);
+            player.play();
+        } catch (JavaLayerException e) {
+            error("an error occurred while playing the TTS-File");
         }
     }
 

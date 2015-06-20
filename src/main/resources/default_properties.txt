@@ -1,1 +1,3 @@
 #change the language with the locale key, e.g. locale = en
+#change the volume with volume=<volume>, the volume ranges from 0.0 (min) to 1.0 (max)
+volume=0.5
